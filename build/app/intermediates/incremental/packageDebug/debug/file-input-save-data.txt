@@ -1,21 +1,21 @@
 #Internal package file, do not edit.
-#Sat Mar 03 23:57:03 CST 2018
+#Tue Mar 06 12:24:40 CST 2018
 4.path=flutter_assets/LICENSE
 8.set=ASSET
-6.path=flutter_assets/assets/images/icon.png
+6.path=flutter_assets/snapshot_blob.bin
 0.baseType=DIRECTORY
-10.path=flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+10.path=flutter_assets/FontManifest.json
 5.baseType=DIRECTORY
 1.base=/media/win_e/other/Embarques/Ramapp/build/app/intermediates/transforms/mergeJniLibs/debug/0
-8.path=flutter_assets/fonts/MaterialIcons-Regular.ttf
+8.path=flutter_assets/AssetManifest.json
 3.base=/media/win_e/other/Embarques/Ramapp/build/app/intermediates/assets/debug
 4.set=ASSET
-5.base=/media/win_e/other/Embarques/Ramapp/build/app/intermediates/assets/debug
+5.base=/media/win_e/other/Embarques/Ramapp/build/app/intermediates/transforms/mergeJniLibs/debug/0
 7.base=/media/win_e/other/Embarques/Ramapp/build/app/intermediates/assets/debug
-11.base=/media/win_e/other/Embarques/Ramapp/build/app/intermediates/transforms/mergeJniLibs/debug/0
+11.base=/media/win_e/other/Embarques/Ramapp/build/app/intermediates/assets/debug
 9.base=/media/win_e/other/Embarques/Ramapp/build/app/intermediates/assets/debug
 1.baseType=DIRECTORY
-11.set=NATIVE_RESOURCE
+11.set=ASSET
 0.set=DEX
 6.baseType=DIRECTORY
 7.set=ASSET
@@ -26,11 +26,11 @@
 7.baseType=DIRECTORY
 3.path=flutter_assets/assets/images/bg_login.png
 10.set=ASSET
-5.path=flutter_assets/snapshot_blob.bin
+5.path=lib/armeabi-v7a/libflutter.so
 0.base=/media/win_e/other/Embarques/Ramapp/build/app/intermediates/transforms/dexMerger/debug/0
-7.path=flutter_assets/AssetManifest.json
-11.path=lib/arm64-v8a/libflutter.so
-9.path=flutter_assets/FontManifest.json
+7.path=flutter_assets/assets/images/icon.png
+11.path=flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+9.path=flutter_assets/fonts/MaterialIcons-Regular.ttf
 6.set=ASSET
 2.base=/media/win_e/other/Embarques/Ramapp/build/app/intermediates/transforms/mergeJniLibs/debug/0
 11.baseType=DIRECTORY
@@ -44,7 +44,7 @@
 9.set=ASSET
 count=12
 4.baseType=DIRECTORY
-5.set=ASSET
+5.set=NATIVE_RESOURCE
 9.baseType=DIRECTORY
 0.path=classes.dex
 1.set=NATIVE_RESOURCE

@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
 
-class Embarques extends StatefulBuilder {
-	
-	final String title = 'Embarques';	
-    
+class Embarques extends StatefulWidget {
+
+  final String title = 'Embarques';
+
+  @override
+  _MyEmbarquesState createState() => new _MyEmbarquesState(title: title);
+}
+
+class _MyEmbarquesState extends State<Embarques> {
+
+  _MyEmbarquesState({
+    Key key,
+    this.title,
+  });
+
+  final String title;
+
+  @override
 	Widget build(BuildContext context, ) {
 
 		return new Scaffold(
@@ -19,7 +33,7 @@ class Embarques extends StatefulBuilder {
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                                 const ListTile(
-                                    leading: const Icon(Icons.album),
+                                    leading: const Icon(Icons.track_changes),
                                     title: const Text('The Enchanted Nightingale'),
                                     subtitle: const Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
                                 ),
