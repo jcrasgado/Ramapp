@@ -1,12 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:async';
+import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
-	LoginPage({Key key, this.title}) : super(key: key);
+
+	LoginPage({
+		Key key, 
+		this.title,
+		@required this.onSubmit,
+		}) : super(key: key);
 
 	final String title;
+	final VoidCallback onSubmit;
 
 	@override
 	_MyLoginState createState() => new _MyLoginState();
@@ -14,73 +22,51 @@ class LoginPage extends StatefulWidget {
 
 class _MyLoginState extends State<LoginPage> { 
 
-	final TextEditingController _username = new TextEditingController();
-	final TextEditingController _password = new TextEditingController();
+	static final TextEditingController _username = new TextEditingController();
+	static final TextEditingController _password = new TextEditingController();
 
-	final GlobalKey<FormFieldState<String>> _usernameFieldKey = new GlobalKey<FormFieldState<String>>();
-	final GlobalKey<FormFieldState<String>> _passwordFieldKey = new GlobalKey<FormFieldState<String>>();    
+	String get username => _username.text;
+	String get password => _password.text;
 
-	bool _validarEmail() {
+	String alert = '';
+	bool statusLogin = true;
 
-		String alert = '';
+	@override
+    void initState() {
+      super.initState();      
+    }	
 
-		if(_username.text == null || _username.text.isEmpty)
+	/* Validar Email */ 
+	void _validarEmail() {
+
+		if(username == null || username.isEmpty)
 		{
 			alert = 'El usuario es obligatorio.';
-		}
-
-		if(!_username.text.contains('@'))
-		{
-			alert = 'El usuario no es un email valido.';
-		}
-
-		if(alert != '')
-		{
-			showDialog( 
-			context: context,
-			child: new AlertDialog(
-					title: new Text('Error'),
-                    content: new Text(alert),
-				),
-			);
-
-			return false;
+			statusLogin = false;
 		}
 		else
 		{
-			return true;
-		}		
+			statusLogin = true;
+		}
 	}
 
-  	bool _validarPassword() {
+	/* Validar Contraseña */ 
+  	void _validarPassword() {
 
-		String alert = '';
-
-		if(_username.text == null || _username.text.isEmpty)
+		if(password == null || password.isEmpty)
 		{
 			alert = 'La Contraseña es obligatoria.';
-		}
-
-		if(alert != '')
-		{
-			showDialog( 
-			context: context,
-			child: new AlertDialog(
-					title: new Text('Error'),
-                    content: new Text(alert),
-				),
-			);
-
-			return false;
+			statusLogin = false;
 		}
 		else
 		{
-			return true;
-		}	
+			statusLogin = true;
+		}
   	}
 
-      void _onLoading() {
-          
+	/* Main Acceso */ 
+	void _onLoading() {
+
         showDialog(
             context: context,
             barrierDismissible: false,
@@ -96,7 +82,7 @@ class _MyLoginState extends State<LoginPage> {
                                     new CircularProgressIndicator(),
                                     new Padding(
                                                 padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
-                                                child: new Text("Cargando..."),
+                                                child: new Text("Iniciando..."),
                                                 ),
                                 ])
                         ,),
@@ -104,87 +90,114 @@ class _MyLoginState extends State<LoginPage> {
                 ),
             ),
         );
-        new Future.delayed(new Duration(seconds: 3), () {
-            Navigator.pop(context); //pop dialog
-            _loginButton();
-        });
     }
+
+	/*Metodo de Acceso*/
+	void _setAutenticar()
+	{
+		setState((){
+			
+			_validarPassword();
+			_validarEmail();
+
+			if(statusLogin == true)
+			{
+				_onLoading();
+				_loginButton();
+			}
+			else
+			{
+				showDialog( 
+				context: context,
+				child: new AlertDialog(
+						title: new Text('Error'),
+						content: new Text(alert),
+					),
+				);
+			}
+
+		});
+	}
     
-    _loginButton() async {
+	/* Metodo de Validacion y Acceso */ 
+    _loginButton() async {        
         
-        if (_validarEmail() && _validarPassword() )
+		var httpClient = new HttpClient();
+		SharedPreferences prefs = await SharedPreferences.getInstance();
+		var respuesta;
+
+		try 
 		{
-            var httpClient = new HttpClient();
-            var respuesta;
+			var uri = new Uri.https( 'zarotransportation.com', '/ram/wsclientes/login', {'usuario': _username.text, 'contrasenia': _password.text});
+			print(uri.toString());
+			var request = await httpClient.getUrl(uri);
+			var response = await request.close();
+			
+			if (response.statusCode == HttpStatus.OK) 
+			{
+				var json = await response.transform(UTF8.decoder).join();
+				var data = JSON.decode(json);
 
-            try 
-            {
-                var uri = new Uri.https( 'zarotransportation.com', '/ram/wsclientes/login', {'usuario': _username.text, 'contrasenia': _password.text});
-                print(uri.toString());
-                var request = await httpClient.getUrl(uri);
-                var response = await request.close();
-                
-                if (response.statusCode == HttpStatus.OK) 
-                {
-                    var json = await response.transform(UTF8.decoder).join();
-                    var data = JSON.decode(json);
+				if( data['estado'] != '')
+				{
+					respuesta = true;
+				}
+				else
+				{
+					respuesta = false;
+				}
+			} 
+			else 
+			{
+				respuesta = response.statusCode;
+			}
+		} 
+		catch (e)
+		{
+			print(e.toString());
+			respuesta = 0;
+		}
 
-                    if( data['estado'] == true)
-                    {
-                        respuesta = true;
-                    }
-                    else
-                    {
-                        respuesta = false;
-                    }
-                } 
-                else 
-                {
-                    respuesta = response.statusCode;
-                }
-            } 
-            catch (e)
-            {
-                print(e.toString());
-                respuesta = 0;
-            }
+		setState(() {
+			if (respuesta == true)
+			{
+				prefs.setString('_username', username);
+				//runApp(new PrincipalApp());
 
-            setState(() {
-                if (respuesta == false)
-                {
-                    showDialog( 
-                        context: context,
-                        child: new AlertDialog(
-                                title: new Text('Acceso'),
-                                content: new Text('Usuario y/o Contraseña Incorrectos'),
-                            ),
-                    );
-                }
-                else if (respuesta == 0)
-                {
-                    showDialog( 
-                        context: context,
-                        child: new AlertDialog(
-                                title: new Text('Conexión'),
-                                content: new Text('Problemas con la conexión al servidor, intentelo nuevamente.'),
-                            ),
-                    );
-                }
-                else
-                {
-                    showDialog( 
-                        context: context,
-                        child: new AlertDialog(
-                                title: new Text('Conexión'),
-                                content: new Text('Problemas con la conexión al servidor.'+ respuesta),
-                            ),
-                    );
-                }
-            });
-        }
-        
-    }
-	
+				Navigator.of(context).pushNamedAndRemoveUntil('/Principal', (Route<dynamic> rout)=> false );
+			}
+			else if (respuesta == false)
+			{
+				showDialog( 
+					context: context,
+					child: new AlertDialog(
+							title: new Text('Acceso'),
+							content: new Text('Usuario y/o Contraseña Incorrectos'),
+						),
+				);
+			}
+			else if (respuesta == 0)
+			{
+				showDialog( 
+					context: context,
+					child: new AlertDialog(
+							title: new Text('Conexión'),
+							content: new Text('Problemas con la conexión al servidor, intentelo nuevamente.'),
+						),
+				);
+			}
+			else
+			{
+				showDialog( 
+					context: context,
+					child: new AlertDialog(
+							title: new Text('Conexión'),
+							content: new Text('Problemas con la conexión al servidor.'+ respuesta),
+						),
+				);
+			}
+		});
+    }	
  
 	@override
 	Widget build(BuildContext context) {
@@ -205,8 +218,7 @@ class _MyLoginState extends State<LoginPage> {
 				children: <Widget>[            
 				
 				new Container(
-					child: new TextField(
-						key: _usernameFieldKey,
+					child: new TextField(						
 						controller: _username,
 						keyboardType: TextInputType.emailAddress,
 						decoration: new InputDecoration(
@@ -217,8 +229,7 @@ class _MyLoginState extends State<LoginPage> {
 				),
 				
 				new Container(
-					child: new TextField(
-						key: _passwordFieldKey,
+					child: new TextField(						
 						controller: _password,
 						obscureText: true,                  
 						decoration: new InputDecoration(
@@ -234,8 +245,8 @@ class _MyLoginState extends State<LoginPage> {
 					color: Colors.red,
 					textColor: Colors.white,
 					textTheme: ButtonTextTheme.accent,
-					onPressed: (){ _onLoading();
-					},
+					onPressed: (){ _setAutenticar();
+						},
 					),
 					margin: new EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 10.0),
 				),
@@ -246,8 +257,6 @@ class _MyLoginState extends State<LoginPage> {
 			)
 
 		);
-	}
-
-    
+	}    
 
 }

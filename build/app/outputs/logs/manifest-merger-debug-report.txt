@@ -4,6 +4,7 @@ ADDED from /media/win_e/other/Embarques/Ramapp/android/app/src/main/AndroidManif
 INJECTED from /media/win_e/other/Embarques/Ramapp/android/app/src/main/AndroidManifest.xml:1:1-39:12
 INJECTED from /media/win_e/other/Embarques/Ramapp/android/app/src/main/AndroidManifest.xml:1:1-39:12
 INJECTED from /media/win_e/other/Embarques/Ramapp/android/app/src/main/AndroidManifest.xml:1:1-39:12
+MERGED from [:shared_preferences] /media/win_e/other/Embarques/Ramapp/build/shared_preferences/intermediates/manifests/full/debug/AndroidManifest.xml:2:1-11:12
 INJECTED from /media/win_e/other/Embarques/Ramapp/android/app/src/main/AndroidManifest.xml:1:1-39:12
 INJECTED from /media/win_e/other/Embarques/Ramapp/android/app/src/main/AndroidManifest.xml:1:1-39:12
 INJECTED from /media/win_e/other/Embarques/Ramapp/android/app/src/main/AndroidManifest.xml:1:1-39:12
@@ -67,6 +68,8 @@ uses-sdk
 INJECTED from /media/win_e/other/Embarques/Ramapp/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /media/win_e/other/Embarques/Ramapp/android/app/src/main/AndroidManifest.xml
 INJECTED from /media/win_e/other/Embarques/Ramapp/android/app/src/main/AndroidManifest.xml
+MERGED from [:shared_preferences] /media/win_e/other/Embarques/Ramapp/build/shared_preferences/intermediates/manifests/full/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:shared_preferences] /media/win_e/other/Embarques/Ramapp/build/shared_preferences/intermediates/manifests/full/debug/AndroidManifest.xml:7:5-9:41
 INJECTED from /media/win_e/other/Embarques/Ramapp/android/app/src/main/AndroidManifest.xml
 INJECTED from /media/win_e/other/Embarques/Ramapp/android/app/src/main/AndroidManifest.xml
 	android:targetSdkVersion
