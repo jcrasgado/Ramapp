@@ -1,9 +1,11 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'dart:async';
+import 'package:crypto/crypto.dart';
 
 class LoginPage extends StatefulWidget {
 
@@ -26,11 +28,12 @@ class _MyLoginState extends State<LoginPage> {
 	static final TextEditingController _password = new TextEditingController();
 
 	String get username => _username.text;
-
 	String get password => _password.text;
 
 	String alert = '';
-	bool statusLogin = true;
+	bool statusUser = true;
+	bool statusPass = true;
+	bool loading = false;
 
 	@override
 	void initState() {
@@ -41,10 +44,10 @@ class _MyLoginState extends State<LoginPage> {
 	void _validarEmail() {
 		if (username == null || username.isEmpty) {
 			alert = 'El usuario es obligatorio.';
-			statusLogin = false;
+			statusUser = false;
 		}
 		else {
-			statusLogin = true;
+			statusUser = true;
 		}
 	}
 
@@ -52,10 +55,10 @@ class _MyLoginState extends State<LoginPage> {
 	void _validarPassword() {
 		if (password == null || password.isEmpty) {
 			alert = 'La Contraseña es obligatoria.';
-			statusLogin = false;
+			statusPass = false;
 		}
 		else {
-			statusLogin = true;
+			statusPass = true;
 		}
 	}
 
@@ -84,6 +87,7 @@ class _MyLoginState extends State<LoginPage> {
 				),
 			),
 		);
+		new Future.delayed(new Duration(seconds: 3),);
 	}
 
 	/*Metodo de Acceso*/
@@ -92,7 +96,7 @@ class _MyLoginState extends State<LoginPage> {
 			_validarPassword();
 			_validarEmail();
 
-			if (statusLogin == true) {
+			if (statusUser == true && statusPass == true) {
 				_onLoading();
 				_loginButton();
 			}
@@ -115,8 +119,13 @@ class _MyLoginState extends State<LoginPage> {
 		var respuesta;
 
 		try {
-			var uri = new Uri.https('zarotransportation.com', '/ram/wsclientes/login',
-					{'usuario': _username.text, 'contrasenia': _password.text});
+
+			var pass = UTF8.encode(password);
+
+			var uri = new Uri.https(
+					'zarotransportation.com', '/fletes/wsclientes/login',
+					{'usuario': username, 'contrasenia': password });
+
 			print(uri.toString());
 			var request = await httpClient.getUrl(uri);
 			var response = await request.close();
@@ -125,11 +134,25 @@ class _MyLoginState extends State<LoginPage> {
 				var json = await response.transform(UTF8.decoder).join();
 				var data = JSON.decode(json);
 
-				if (data['estado'] != '') {
+				if (data['estado'] == "true") {
 					respuesta = true;
+
+					print(data['datos_cliente'][0]['id_cliente']);
+
+					prefs.setString('id_cliente', data['datos_cliente'][0]['id_cliente']);
+					prefs.setString('username', data['datos_cliente'][0]['username']);
+					prefs.setString('nombre', data['datos_cliente'][0]['nombre']);
+					prefs.setString('email', data['datos_cliente'][0]['correo']);
+					prefs.setString('oficina', data['datos_cliente'][0]['oficina']);
+					prefs.setString('grupo', data['datos_cliente'][0]['grupo']);
+					prefs.setString('pais', data['datos_cliente'][0]['pais']);
+					prefs.setString('tipo_usuario', data['datos_cliente'][0]['tipo_usuario']);
+					prefs.setString('password', md5.convert(pass).toString() );
+
 				}
 				else {
 					respuesta = false;
+					Navigator.pop(context);
 				}
 			}
 			else {
@@ -139,13 +162,12 @@ class _MyLoginState extends State<LoginPage> {
 		catch (e) {
 			print(e.toString());
 			respuesta = 0;
+			Navigator.pop(context);
 		}
 
 		setState(() {
 			if (respuesta == true) {
-				prefs.setString('_username', username);
 				//runApp(new PrincipalApp());
-
 				Navigator.of(context).pushNamedAndRemoveUntil(
 						'/Principal', (Route<dynamic> rout) => false);
 			}

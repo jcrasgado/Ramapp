@@ -1,48 +1,98 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'dart:convert';
 
 class Embarques extends StatefulWidget {
 
-  final String title = 'Embarques';
+  Embarques(this.username, this.email);
+
+  final String username;
+  final String email;
 
   @override
-  _MyEmbarquesState createState() => new _MyEmbarquesState(title: title);
+  _MyembarquesState createState() => new _MyembarquesState(username);
 }
 
-class _MyEmbarquesState extends State<Embarques> {
+class _MyembarquesState extends State<Embarques> {
 
-  _MyEmbarquesState({
-    Key key,
-    this.title,
-  });
+  _MyembarquesState(this.username);
 
-  final String title;
+  final String username;
+
+  _obtener_embarques() async {
+
+    var httpClient = new HttpClient();
+    var uri = new Uri.https( 'zarotransportation.com', 'fletes/wsclientes/listaEmbarques', {'': username });
+
+    print(uri.toString());
+    var request = await httpClient.getUrl(uri);
+    var response = await request.close();
+
+    if (response.statusCode == HttpStatus.OK) {
+      var json = await response.transform(UTF8.decoder).join();
+      var data = JSON.decode(json);
+
+      //return data;
+    }
+
+  }
 
   @override
-	Widget build(BuildContext context, ) {
+  void setState(VoidCallback fn) {
+    // TODO: implement setState
+    super.setState(fn);
 
-		return new Scaffold(
-			appBar: new AppBar(
-				title: new Text(title),
-			),			
-			body: new Container(				
-				padding: new EdgeInsets.all(20.0),
-				child: new Column(          
-					mainAxisAlignment: MainAxisAlignment.start,
-					children: <Widget>[
-                        new Card( child: new Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                                const ListTile(
-                                    leading: const Icon(Icons.track_changes),
-                                    title: const Text('The Enchanted Nightingale'),
-                                    subtitle: const Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-                                ),
-                            ], 
-                        ),),
-                    ],
+    _obtener_embarques();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        body: new Container(
+          child: new Column(
+            children: <Widget>[
+              new Container(
+                child: new Text(username, style:  new TextStyle(fontSize: 20.0),),
+              ),
+              new Container(
+                child: new Row(
+                  children: <Widget>[
+                    new Column(children: <Widget>[
+                      new Container(child: new Column(
+                        children: <Widget>[
+                          new Container( child: new Icon(Icons.track_changes, color: Colors.black),),
+                          new Container( child: new Text('Embarques'),),
+                        ],
+                      )),
+                      new Container(child: new Text('0', style:  new TextStyle(fontSize: 15.0), ),)
+                    ],),
+                    new Column(children: <Widget>[
+                      new Container(child: new Column(
+                        children: <Widget>[
+                          new Container( child: new Icon(Icons.traffic, color: Colors.black),),
+                          new Container( child: new Text('Viajes'),),
+                        ],
+                      )),
+                      new Container(child: new Text('0', style:  new TextStyle(fontSize: 15.0), ),)
+                    ],),
+                    new Column(children: <Widget>[
+                      new Container(child: new Column(
+                        children: <Widget>[
+                          new Container( child: new Icon(Icons.monetization_on, color: Colors.black),),
+                          new Container( child: new Text('Facturas'),),
+                        ],
+                      )),
+                      new Container(child: new Text('0', style:  new TextStyle(fontSize: 15.0), ),)
+                    ],),
+                  ],
                 ),
-            ),
-		);
-	}
+              ),
+            ],
+          ),
+        )
+    );
+  }
 
 }
+

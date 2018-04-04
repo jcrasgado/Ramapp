@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:RamApp/screen/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Principal extends StatefulWidget {
@@ -19,13 +20,21 @@ class _MyPrincipalState extends State<Principal> {
 	});
 
 	final String title;
+
 	String username = '';
+	String nombre = '';
+	String email = '';
+	String titulo = '';
+	Widget contenido;
 
 	getSharedPreferences() async {
 		SharedPreferences prefs = await SharedPreferences.getInstance();
 
 		setState(() {
-			username = prefs.getString("_username");
+			username = prefs.getString("username");
+			nombre = prefs.getString("nombre");
+			email = prefs.getString("email");
+      contenido= new Home(username, email);
 		});
 	}
 
@@ -39,7 +48,7 @@ class _MyPrincipalState extends State<Principal> {
 	Widget build(BuildContext context) {
 		return new Scaffold(
 				appBar: new AppBar(
-					title: new Text(title),
+					title: new Text(titulo != '' ? titulo : title)
 				),
 				drawer: new Drawer(
 						child: new ListView(
@@ -49,8 +58,8 @@ class _MyPrincipalState extends State<Principal> {
 										backgroundColor: Colors.red.shade200,
 										child: new Icon(Icons.person),
 									),
-									accountName: new Text(username),
-									accountEmail: new Text(username + '@example.com'),
+									accountName: new Text(nombre),
+									accountEmail: new Text(email),
 									otherAccountsPictures: <Widget>[
 										new GestureDetector(
 											onTap: () {},
@@ -69,7 +78,7 @@ class _MyPrincipalState extends State<Principal> {
 									leading: new CircleAvatar(child: new Icon(
 										Icons.track_changes, color: Colors.white,)),
 									title: new Text('Embarques'),
-									onTap: () { Navigator.of(context).pushNamed('/Embarques'); },
+									onTap: () {  Navigator.pop(context, new Home(username, email)); },
 								),
 								new ListTile(
 									leading: new CircleAvatar(
@@ -93,32 +102,8 @@ class _MyPrincipalState extends State<Principal> {
 							],
 						)
 				),
-				body: new Container(
-					padding: new EdgeInsets.all(20.0),
-					child: new Column(
-						mainAxisAlignment: MainAxisAlignment.start,
-						children: <Widget>[
-
-							new Center(
-									child: new Text('Bienvenido', style: Theme
-											.of(context)
-											.textTheme
-											.display1)
-							),
-
-							new Center(
-									child: new Text(username, style: Theme
-											.of(context)
-											.textTheme
-											.display1)
-							),
-
-
-						],
-					),
-				)
+				body: contenido ,
 		);
 	}
-
-
 }
+

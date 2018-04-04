@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:RamApp/screen/login.dart';
 import 'package:RamApp/screen/principal.dart';
-import 'package:RamApp/screen/embarques.dart';
 
 void main() => runApp(new RamApp());
 
@@ -17,7 +16,6 @@ class RamApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/Login': (BuildContext context) => new LoginPage(onSubmit: null),
         '/Principal': (BuildContext context) => new Principal(),
-        '/Embarques': (BuildContext context) => new Embarques(),
       },
       home: new LoginPage(title: 'ACCESO', onSubmit: null,),
     );

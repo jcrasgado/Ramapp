@@ -26,8 +26,8 @@ class S extends WidgetsLocalizations {
 
 }
 
-class en extends S {
-  en(Locale locale) : super(locale);
+class En extends S {
+  En(Locale locale) : super(locale);
 }
 class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocalizations> {
   const GeneratedLocalizationsDelegate();
@@ -56,7 +56,7 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocali
     String lang = getLang(locale);
     switch (lang) {
       case "en":
-        return new SynchronousFuture<WidgetsLocalizations>(new en(locale));
+        return new SynchronousFuture<WidgetsLocalizations>(new En(locale));
       default:
         return new SynchronousFuture<WidgetsLocalizations>(new S(locale));
     }
