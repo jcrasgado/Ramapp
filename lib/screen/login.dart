@@ -67,49 +67,65 @@ class _MyLoginState extends State<LoginPage> {
 		showDialog(
 			context: context,
 			barrierDismissible: false,
-			child: new Dialog(
-				child: new Row(
-					mainAxisSize: MainAxisSize.max,
-					children: <Widget>[
-						new Padding(
-							padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
-							child: new Row(
-									mainAxisSize: MainAxisSize.max,
-									children: <Widget>[
-										new CircularProgressIndicator(),
-										new Padding(
-											padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
-											child: new Text("Iniciando..."),
-										),
-									])
-							,),
-					],
-				),
-			),
+				builder: (BuildContext context) {
+					return new Dialog(
+						child: new Row(
+							mainAxisSize: MainAxisSize.max,
+							children: <Widget>[
+								new Padding(
+									padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+									child: new Row(
+											mainAxisSize: MainAxisSize.max,
+											children: <Widget>[
+												new CircularProgressIndicator(),
+												new Padding(
+													padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
+													child: new Text("Iniciando..."),
+												),
+											])
+									,),
+							],
+						),
+					);
+				},
 		);
 		new Future.delayed(new Duration(seconds: 3),);
 	}
 
 	/*Metodo de Acceso*/
-	void _setAutenticar() {
+	Future<Null> _setAutenticar() async {
+
 		setState(() {
 			_validarPassword();
 			_validarEmail();
+		});
 
 			if (statusUser == true && statusPass == true) {
 				_onLoading();
 				_loginButton();
 			}
 			else {
-				showDialog(
+
+				return showDialog<Null>(
 					context: context,
-					child: new AlertDialog(
-						title: new Text('Error'),
-						content: new Text(alert),
-					),
+					barrierDismissible: false,
+					builder: (BuildContext context) {
+							return new AlertDialog(
+								title: new Text('Error'),
+								content: new Text(alert),
+								actions: <Widget>[
+									new FlatButton(
+										child: new Text('Aceptar'),
+										onPressed: () {
+											Navigator.of(context).pop();
+										},
+									),
+								],
+							);
+						}
 				);
+
 			}
-		});
 	}
 
 	/* Metodo de Validacion y Acceso */
@@ -120,8 +136,7 @@ class _MyLoginState extends State<LoginPage> {
 
 		try {
 
-			var pass = UTF8.encode(password);
-
+			var pass = utf8.encode(password);
 			var uri = new Uri.https(
 					'zarotransportation.com', '/fletes/wsclientes/login',
 					{'usuario': username, 'contrasenia': password });
@@ -131,16 +146,16 @@ class _MyLoginState extends State<LoginPage> {
 			var response = await request.close();
 
 			if (response.statusCode == HttpStatus.OK) {
-				var json = await response.transform(UTF8.decoder).join();
-				var data = JSON.decode(json);
+				var dataJson = await response.transform(utf8.decoder).join();
+				var data = json.decode(dataJson);
 
 				if (data['estado'] == "true") {
 					respuesta = true;
 
-					print(data['datos_cliente'][0]['id_cliente']);
+					print(data['datos_cliente'][0]['usuario']);
 
 					prefs.setString('id_cliente', data['datos_cliente'][0]['id_cliente']);
-					prefs.setString('username', data['datos_cliente'][0]['username']);
+					prefs.setString('username', data['datos_cliente'][0]['usuario']);
 					prefs.setString('nombre', data['datos_cliente'][0]['nombre']);
 					prefs.setString('email', data['datos_cliente'][0]['correo']);
 					prefs.setString('oficina', data['datos_cliente'][0]['oficina']);

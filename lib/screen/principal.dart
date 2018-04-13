@@ -3,11 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:RamApp/screen/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:RamApp/screen/embarques.dart';
+import 'package:RamApp/screen/viajes.dart';
 
 class Principal extends StatefulWidget {
 	
 	final String title = 'Ram App';
-
 	@override
 	_MyPrincipalState createState() => new _MyPrincipalState(title: title);
 }
@@ -26,6 +27,11 @@ class _MyPrincipalState extends State<Principal> {
 	String email = '';
 	String titulo = '';
 	Widget contenido;
+	int _currentIndex = 0;
+	var bgH = Colors.black26;
+  var bgE = Colors.black26;
+  var bgV = Colors.black26;
+	var bgT = Colors.black26;
 
 	getSharedPreferences() async {
 		SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -34,9 +40,58 @@ class _MyPrincipalState extends State<Principal> {
 			username = prefs.getString("username");
 			nombre = prefs.getString("nombre");
 			email = prefs.getString("email");
-      contenido= new Home(username, email);
+
+      contenido= new Home(nombre, email);
+      bgH = Colors.red;
 		});
 	}
+
+	_setView (int value)
+  {
+    switch(value)
+    {
+      case 0:
+        contenido = new Home(username, email);
+        titulo = "Home";
+        bgH = Colors.red;
+        bgE = Colors.black26;
+        bgV = Colors.black26;
+				bgT = Colors.black26;
+        _currentIndex = 0;
+        break;
+
+      case 1:
+        contenido = new Embarques();
+        titulo = "Embarques";
+        bgH = Colors.black26;
+        bgE = Colors.red;
+        bgV = Colors.black26;
+				bgT = Colors.black26;
+        _currentIndex = 1;
+        break;
+
+      case 2:
+        contenido = new Viajes();
+        titulo = "Viajes";
+        bgH = Colors.black26;
+        bgE = Colors.black26;
+        bgV = Colors.red;
+				bgT = Colors.black26;
+        _currentIndex = 2;
+        break;
+
+			case 3:
+				contenido = new Viajes();
+				titulo = "Viajes Terminados";
+				bgH = Colors.black26;
+				bgE = Colors.black26;
+				bgV = Colors.black26;
+				bgT = Colors.red;
+				_currentIndex = 3;
+				break;
+    }
+  }
+
 
 	@override
 	void initState() {
@@ -50,57 +105,19 @@ class _MyPrincipalState extends State<Principal> {
 				appBar: new AppBar(
 					title: new Text(titulo != '' ? titulo : title)
 				),
-				drawer: new Drawer(
-						child: new ListView(
-							children: <Widget>[
-								new UserAccountsDrawerHeader(
-									currentAccountPicture: new CircleAvatar(
-										backgroundColor: Colors.red.shade200,
-										child: new Icon(Icons.person),
-									),
-									accountName: new Text(nombre),
-									accountEmail: new Text(email),
-									otherAccountsPictures: <Widget>[
-										new GestureDetector(
-											onTap: () {},
-											child: new Semantics(
-												label: 'Ram',
-												child: const CircleAvatar(
-													backgroundImage: const AssetImage(
-															"assets/images/icon.png"),
-												),
-											),
-										),
-									],
-									margin: EdgeInsets.zero,
-								),
-								new ListTile(
-									leading: new CircleAvatar(child: new Icon(
-										Icons.track_changes, color: Colors.white,)),
-									title: new Text('Embarques'),
-									onTap: () {  Navigator.pop(context, new Home(username, email)); },
-								),
-								new ListTile(
-									leading: new CircleAvatar(
-											child: new Icon(Icons.traffic, color: Colors.white,)),
-									title: new Text('Viajes'),
-									onTap: () {},
-								),
-								new ListTile(
-									leading: new CircleAvatar(child: new Icon(
-										Icons.monetization_on, color: Colors.white,)),
-									title: new Text('Facturas'),
-									onTap: () {},
-								),
-								new Divider(),
-								new ListTile(
-									leading: new CircleAvatar(
-											child: new Icon(Icons.close, color: Colors.white,)),
-									title: new Text('Cerrar Sessión'),
-									onTap: () {},
-								),
-							],
-						)
+				bottomNavigationBar: new BottomNavigationBar(
+          currentIndex: _currentIndex,
+					onTap: (value) {
+            setState((){
+                _setView(value);
+            });
+					},
+					items: <BottomNavigationBarItem>[
+						new BottomNavigationBarItem(icon: new Icon(Icons.home), title: new Text("Home"), backgroundColor: bgH ),
+						new BottomNavigationBarItem(icon: new Icon(Icons.track_changes), title: new Text("Embarques"), backgroundColor: bgE),
+						new BottomNavigationBarItem(icon: new Icon(Icons.traffic), title: new Text("Viajes"), backgroundColor: bgV),
+						new BottomNavigationBarItem(icon: new Icon(Icons.widgets), title: new Text("Terminados"), backgroundColor: bgT),
+					],
 				),
 				body: contenido ,
 		);

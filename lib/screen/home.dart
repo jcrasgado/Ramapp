@@ -9,60 +9,93 @@ class Home extends StatefulWidget {
   final String email;
 
   @override
-  _MyHomeState createState() => new _MyHomeState(username);
+  _MyHomeState createState() => new _MyHomeState(username, email);
 }
 
 class _MyHomeState extends State<Home> {
 
-  _MyHomeState(this.username);
+  _MyHomeState(this.username, this.email);
 
   final String username;
+  final String email;
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        body: new Container(
-          child: new Column(
+        body:
+        new Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              new Container(
-                child: new Text(username, style:  new TextStyle(fontSize: 20.0),),
-              ),
-              new Container(
-                child: new Row(
+              new Image.asset( 'assets/images/ram_icon.png', width: 150.0, height: 150.0, ),
+              new Text( username, style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),),
+              new Text( email, style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),),
+              new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    new Column(children: <Widget>[
-                      new Container(child: new Column(
-                        children: <Widget>[
-                          new Container( child: new Icon(Icons.track_changes, color: Colors.black),),
-                          new Container( child: new Text('Embarques'),),
-                        ],
-                      )),
-                      new Container(child: new Text('0', style:  new TextStyle(fontSize: 15.0), ),)
-                    ],),
-                    new Column(children: <Widget>[
-                      new Container(child: new Column(
-                        children: <Widget>[
-                          new Container( child: new Icon(Icons.traffic, color: Colors.black),),
-                          new Container( child: new Text('Viajes'),),
-                        ],
-                      )),
-                      new Container(child: new Text('0', style:  new TextStyle(fontSize: 15.0), ),)
-                    ],),
-                    new Column(children: <Widget>[
-                      new Container(child: new Column(
-                        children: <Widget>[
-                          new Container( child: new Icon(Icons.monetization_on, color: Colors.black),),
-                          new Container( child: new Text('Facturas'),),
-                        ],
-                      )),
-                      new Container(child: new Text('0', style:  new TextStyle(fontSize: 15.0), ),)
-                    ],),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        )
+                      new Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            new Container(
+                                margin: const EdgeInsets.only(bottom: 8.0),
+                                child:new Text( "0", style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0), ) ),
+
+                            new Container(
+                                margin: const EdgeInsets.only(bottom: 8.0),
+                                child:new Text( "Embarques", style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0), ) ),
+
+                            new Icon( Icons.track_changes, size: 36.0)
+                          ]
+
+                      ),
+
+                      new Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            new Container(
+                                margin: const EdgeInsets.only(bottom: 8.0),
+                                child:new Text( "0", style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0), ) ),
+
+                            new Container(
+                                margin: const EdgeInsets.only(bottom: 8.0),
+                                child:new Text( "En Ruta", style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0), ) ),
+
+                            new Icon( Icons.traffic, size: 36.0)
+                          ]
+
+                      ),
+
+                      new Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            new Container(
+                                margin: const EdgeInsets.only(bottom: 8.0),
+                                child:new Text( "0", style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0), ) ),
+
+                            new Container(
+                                margin: const EdgeInsets.only(bottom: 8.0),
+                                child:new Text( "Terminados", style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0), ) ),
+
+                            new Icon( Icons.widgets, size: 36.0)
+                          ]
+
+                      ),
+
+                  ]
+
+              )
+            ]
+
+        ),
     );
   }
 
