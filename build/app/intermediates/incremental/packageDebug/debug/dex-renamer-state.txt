@@ -1,4 +1,0 @@
-#Wed Apr 04 09:49:58 CDT 2018
-base.0=/media/win_e/other/Embarques/Ramapp/build/app/intermediates/transforms/dexMerger/debug/0
-path.0=classes.dex
-renamed.0=classes.dex
